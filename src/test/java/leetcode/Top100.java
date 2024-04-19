@@ -10,13 +10,24 @@ import java.util.regex.Pattern;
 public class Top100 {
 
 
+
+
     @Test
     public void testlengthOfLastWord() {
         String s = "Hello World";
         int i = lengthOfLastWord(s);
         System.out.println(i);
-    }
-
+    }    /**
+     *length-of-last-word: https://leetcode.cn/problems/length-of-last-word/
+     *
+     * 题解：
+     * 1、按空格正则分割
+     * 2、倒序遍历，找到第一个不为空的字符串返回
+     *
+     *
+     * @param s
+     * @return
+     */
     public int lengthOfLastWord(String s) {
 
         String[] split = s.split("\\s+");
