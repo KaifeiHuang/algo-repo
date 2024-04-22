@@ -10,6 +10,62 @@ import java.util.regex.Pattern;
 public class Top100 {
 
 
+    @Test
+    public void testmultiply() {
+        String num1 = "123";
+        String num2 = "45";
+        multiply1(num1, num2);
+
+    }
+
+
+    public String multiply1(String s1, String s2) {
+        // 临界条件
+        if (s1.equals("0") || s2.equals("0"))
+            return "0";
+        // 计算
+        int m = s1.length();
+        int n = s2.length();
+        int[] ans = new int[m + n];
+
+        for (int i = m - 1; i >= 0; i--) {
+            int a = s1.charAt(i) - '0';
+            for (int j = n - 1; j >= 0; j--) {
+                int b = s2.charAt(j) - '0';
+                int sum = ans[i + j + 1] + a * b;
+                // 求尾数
+                ans[i + j + 1] = sum % 10;
+                // 求进位
+                ans[i + j] += sum / 10;
+            }
+        }
+        // 求最终结果
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ans.length; i++) {
+            // 消除第一位0
+            if (i == 0 && ans[i] == 0) {
+                continue;
+            }
+            sb.append(ans[i]);
+        }
+        return sb.toString();
+
+    }
+
+    /**
+     * top43： 43. 字符串相乘  https://leetcode.cn/problems/multiply-strings/description/
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        BigInteger ba = new BigInteger(num1);
+        BigInteger bb = new BigInteger(num2);
+        BigInteger multiply = ba.multiply(bb);
+        System.out.println(multiply.intValue());
+        return multiply.intValue() + "";
+    }
 
 
     @Test
@@ -17,13 +73,15 @@ public class Top100 {
         String s = "Hello World";
         int i = lengthOfLastWord(s);
         System.out.println(i);
-    }    /**
-     *length-of-last-word: https://leetcode.cn/problems/length-of-last-word/
-     *
+    }
+
+    /**
+     * length-of-last-word: https://leetcode.cn/problems/length-of-last-word/
+     * <p>
+     * top: 58
      * 题解：
      * 1、按空格正则分割
      * 2、倒序遍历，找到第一个不为空的字符串返回
-     *
      *
      * @param s
      * @return
