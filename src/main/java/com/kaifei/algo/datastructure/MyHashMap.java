@@ -61,11 +61,12 @@ public class MyHashMap<K, V> {
     }
 
     private Node<K, V> getNode(int hash, Object key) {
-        Node<K, V> first, e;
+        Node<K, V> first, e; K k;
         // 判断当前hash位置的元素first是否为空，为空则返回null，不为空
         if ((first=table[hash]) != null) {
-            // 检查当前位置的hash与计算的hash 以及key是否等于要查询的key
-            if (first.hash == hash && first.key == key) {
+            // 当前位置的hash与计算的hash比较，******根据key的equals()方法用来找到键值对*****。 也就是说同个链表上的hash值都是一样的，但是key不相等，获取的时候看是链表还是红黑树
+            if (first.hash == hash &&
+                    ((k=first.key) == key || (key != null && key.equals(k)) )) {
                 return first;
             }
             // 没有直接获取到，说明该位置是红黑树或者链表
