@@ -1,5 +1,6 @@
 package leetcode;
 
+import com.kaifei.algo.Utils.PrintUtils;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -8,6 +9,77 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Top100 {
+
+
+
+
+
+    /**
+     *
+    top69: https://leetcode.cn/problems/sqrtx/  x的平方根
+
+     题解：// 利用函数变化
+
+     时间复杂度： O(1)
+     空间复杂度： O(1)
+
+
+     *
+     */
+    public int mySqrt(int x) {
+        // 临界条件：
+        if (x==0) return 0;
+        // 利用函数变化
+        int ans = (int) Math.exp(0.5 * Math.log(x));
+        // 因为是int取整， ans的平方<x -> ans+1; 转为long，是因为计算有可能超出int长度
+        return (long)  (ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
+    }
+
+    @Test
+    public void testplusOne() {
+        int[] nums = {9, 9, 9};
+
+        int[] ints = plusOne(nums);
+        PrintUtils.printIntArray(ints);
+
+
+    }
+
+    /**
+     * top66: 加1： https://leetcode.cn/problems/plus-one/
+
+     * 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。最高位数字存放在数组的首位， 数组中每个元素只存储单个数字。
+     * <p>
+     * 你可以假设除了整数 0 之外，这个整数不会以零开头。
+
+     * 示例 1：
+     * <p>
+     * 输入：digits = [1,2,3]
+     * 输出：[1,2,4]
+     * 解释：输入数组表示数字 123。
+     * digits=[9]  -> [1,0]
+     * <p>
+     * 题解：
+     * 1、+1后数组元素不变
+     * 2、+1后数组元素个数+1
+     *
+     * @param digits
+     * @return
+     */
+    public int[] plusOne(int[] digits) {
+        int n = digits.length;
+        //+1后数组元素不变
+        for (int i = n - 1; i >= 0; i--) {
+            digits[i] = digits[i] + 1;
+            digits[i] = digits[i] % 10;
+            // 无进位，加1结束返回
+            if (digits[i] != 0) return digits;
+        }
+        // +1后数组元素个数+1,其实考虑999999这种情况
+        digits = new int[n + 1];
+        digits[0] = 1;
+        return digits;
+    }
 
     @Test
     public void testjump() {
@@ -87,8 +159,7 @@ public class Top100 {
      */
     public String multiply(String s1, String s2) {
         // 临界条件
-        if (s1.equals("0") || s2.equals("0"))
-            return "0";
+        if (s1.equals("0") || s2.equals("0")) return "0";
         // 计算
         int m = s1.length();
         int n = s2.length();
