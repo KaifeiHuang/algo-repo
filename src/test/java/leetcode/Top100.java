@@ -3,12 +3,157 @@ package leetcode;
 import com.kaifei.algo.Utils.PrintUtils;
 import org.junit.Test;
 
+import java.awt.*;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Top100 {
+
+
+    @Test
+    public void testmerge(){
+        int[] nums1 = {1, 2, 3, 0, 0, 0};
+        int m = 3;
+        int[] nums2 = {2,5,6};
+        int n=3;
+
+        merge(nums1, m, nums2, n);
+    }
+
+
+    /**
+     top88： 合并两个有序数组  https://leetcode.cn/problems/merge-sorted-array/
+
+     题解：三指针解决， 用len来存放 len1，len2 大的元素，一次进行比较，比较完之后将len2没有比较的元素全部都copy过去
+
+     思路
+     标签：从后向前数组遍历
+     因为 nums1 的空间都集中在后面，所以从后向前处理排序的数据会更好，节省空间，一边遍历一边将值填充进去
+     设置指针 len1 和 len2 分别指向 nums1 和 nums2 的有数字尾部，从尾部值开始比较遍历，同时设置指针 len 指向 nums1 的最末尾，每次遍历比较值大小之后，则进行填充
+     当 len1<0 时遍历结束，此时 nums2 中海油数据未拷贝完全，将其直接拷贝到 nums1 的前面，最后得到结果数组
+     时间复杂度：O(m+n)O(m+n)O(m+n)
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int len1 = m-1;
+        int len2 = n-1;
+        int len = m+n-1;
+
+        while (len1>=0 && len2>=0){
+            // nums1的前m个数与nums2的n个元素进行比较
+            if (nums1[len1] > nums2[len2]){
+                nums1[len] = nums1[len1];
+                len1--;
+            }else{
+                nums1[len] = nums2[len2];
+                len2--;
+            }
+            len--;
+        }
+        // 表示将nums2数组从下标0位置开始，拷贝到nums1数组中，从下标0位置开始，长度为len2+1
+        System.arraycopy(nums2,0, nums1, 0, len2+1);
+    }
+
+    public static void quickSort(int[] arr,int low,int high) {
+        int p,i,j,temp;
+
+        if(low >= high) {
+            return;
+        }
+        //p就是基准数,这里就是每个数组的第一个
+        p = arr[low];
+        i = low;
+        j = high;
+        while(i < j) {
+            //右边当发现小于p的值时停止循环
+            while(arr[j] >= p && i < j) {
+                j--;
+            }
+
+            //这里一定是右边开始，上下这两个循环不能调换（下面有解析，可以先想想）
+
+            //左边当发现大于p的值时停止循环
+            while(arr[i] <= p && i < j) {
+                i++;
+            }
+
+            temp = arr[j];
+            arr[j] = arr[i];
+            arr[i] = temp;
+        }
+        arr[low] = arr[i];//这里的arr[i]一定是停小于p的，经过i、j交换后i处的值一定是小于p的(j先走)
+        arr[i] = p;
+        quickSort(arr,low,j-1);  //对左边快排
+        quickSort(arr,j+1,high); //对右边快排
+
+    }
+
+    public static void quickSort(int[] arr, int low, int high) {
+        if (low >= high) return;
+
+
+        // step1: choose pivot
+        int pivot = high;
+
+        int leftPointer = low;
+        int rightPointer = high;
+
+        // step2: partition
+        while (leftPointer < rightPointer) {
+            // leftPointer往右侧移动，直到它位置元素比pivot位置大
+            while (arr[leftPointer] <= arr[pivot] && leftPointer < rightPointer) {
+                leftPointer++;
+            }
+
+
+            // rightPointer往左侧移动，直到它位置元素比pivot位置小
+            while (arr[rightPointer] >= arr[pivot] && leftPointer < rightPointer) {
+                rightPointer--;
+            }
+
+            // 交换lp和rp
+            swap(arr, leftPointer, rightPointer);
+
+        }
+        // 将lp与pivot进行交换
+        swap(arr, leftPointer, pivot);
+
+        quickSort(arr, low, leftPointer - 1);
+        quickSort(arr, leftPointer + 1, high);
+
+    }
+
+    private static void swap(int[] arr, int leftPointer, int rightPointer) {
+        int temp = arr[rightPointer];
+        arr[rightPointer] = arr[leftPointer];
+        arr[leftPointer] = temp;
+    }
+
+    public void quickSort1(int[] arr, int low, int high) {
+        // int pivot
+        int n = arr.length;
+
+        int pivot = arr[n - 1];
+        int left = low;
+        int right = high;
+        while (left < right){
+            while( arr[left] <= pivot && left < right){
+                left++;
+            }
+            while( arr[right] >= pivot && left < right){
+                right--;
+            }
+            int tmp = arr[right];
+            arr[right] = arr[left];
+            arr[left] = tmp;
+        }
+        arr[low] = arr[left];
+        arr[left] = pivot;
+        quickSort(arr, low, left-1);
+        quickSort(arr, left+1, high);
+        // sort
+    }
 
 
     @Test
