@@ -9,6 +9,38 @@ import java.util.regex.Pattern;
 
 public class Top100 {
 
+    @Test
+    public void testjump() {
+        int[] nums = {2, 3, 0, 1, 4};
+        int jump = jump(nums);
+
+    }
+
+    /**
+     * top45： https://leetcode.cn/problems/jump-game-ii/
+     * 题解：返回索引0位置跳到最后一个索引的中间的最小步数，每次能跳的最大步数由该索引位置上值决定
+     * <p>
+     * <p>
+     * nums = [2,3,0,1,4] -> 2
+     * nums = [2,3,1,1,4] -> 2
+     * nums = [1,2,3]     -> 2
+     * nums = [3,2,1]     -> 1
+     * nums = [1]         -> 1
+     */
+    public int jump(int[] nums) {
+
+        int end = 0, maxPosition = 0, steps = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            maxPosition = Math.max(maxPosition, nums[i] + i);
+            // 跳到边界，更新边界，步数加一
+            if (i == end) {
+                end = maxPosition;
+                steps++;
+            }
+        }
+        return steps;
+
+    }
 
     @Test
     public void testmultiply() {
@@ -20,26 +52,26 @@ public class Top100 {
 
     public String multiply1(String s1, String s2) {
         // 临界条件
-        if ( "0".equals(s1) ||  "0".equals(s2)) return "0";
+        if ("0".equals(s1) || "0".equals(s2)) return "0";
         // 竖版求解
         int m = s1.length();
         int n = s2.length();
         int[] ans = new int[m + n];
-        for (int i = m-1; i >=0; i--) {
+        for (int i = m - 1; i >= 0; i--) {
             int a = s1.charAt(i) - '0';
-            for (int j = n-1; j >=0; j--) {
+            for (int j = n - 1; j >= 0; j--) {
                 int b = s2.charAt(j) - '0';
-                int sum = ans[i+j+1] + a*b;
+                int sum = ans[i + j + 1] + a * b;
                 // 尾数求和
-                ans[i+j+1] = sum %10;
+                ans[i + j + 1] = sum % 10;
                 // 进位加和
-                ans[i+j] += sum /10;
+                ans[i + j] += sum / 10;
             }
         }
         // 结果输出
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < ans.length; i++) {
-            if (i==0 && ans[i] == 0) continue;
+            if (i == 0 && ans[i] == 0) continue;
             sb.append(ans[i]);
         }
         return sb.toString();
