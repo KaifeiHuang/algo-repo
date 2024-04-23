@@ -11,28 +11,62 @@ import java.util.regex.Pattern;
 public class Top100 {
 
 
+    @Test
+    public void testdeleteDuplicates() {
+        ListNode l2 = new ListNode(1, null);
+        ListNode l1 = new ListNode(1, l2);
+        ListNode l = new ListNode(1, l1);
 
+        ListNode listNode = deleteDuplicates(l);
+        System.out.println(listNode);
+    }
+
+    /**
+     * top83. 删除排序链表中的重复元素   https://leetcode.cn/problems/remove-duplicates-from-sorted-list/description/
+     * <p>
+     * 题解： 链表问题双指针， head，cur， cur=cur.next来移动位置
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        // 临界条件
+        if (head == null || head.next == null) return head;
+        // 双指针
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode tmp = cur.next;
+            // tmp为空，说明是最后一个node，直接返回
+            if (tmp == null) {
+                return head;
+            }
+            // 前一个和后一个的val相同则直接将next指向下一个
+            if (cur.val == tmp.val) {
+                cur.next = tmp.next;
+                continue;
+            }
+            cur = cur.next;
+
+        }
+        return head;
+    }
 
 
     /**
-     *
-    top69: https://leetcode.cn/problems/sqrtx/  x的平方根
-
-     题解：// 利用函数变化
-
-     时间复杂度： O(1)
-     空间复杂度： O(1)
-
-
-     *
+     * top69: https://leetcode.cn/problems/sqrtx/  x的平方根
+     * <p>
+     * 题解：// 利用函数变化
+     * <p>
+     * 时间复杂度： O(1)
+     * 空间复杂度： O(1)
      */
     public int mySqrt(int x) {
         // 临界条件：
-        if (x==0) return 0;
+        if (x == 0) return 0;
         // 利用函数变化
         int ans = (int) Math.exp(0.5 * Math.log(x));
         // 因为是int取整， ans的平方<x -> ans+1; 转为long，是因为计算有可能超出int长度
-        return (long)  (ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
+        return (long) (ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
     }
 
     @Test
@@ -47,11 +81,11 @@ public class Top100 {
 
     /**
      * top66: 加1： https://leetcode.cn/problems/plus-one/
-
+     * <p>
      * 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。最高位数字存放在数组的首位， 数组中每个元素只存储单个数字。
      * <p>
      * 你可以假设除了整数 0 之外，这个整数不会以零开头。
-
+     * <p>
      * 示例 1：
      * <p>
      * 输入：digits = [1,2,3]
