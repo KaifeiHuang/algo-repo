@@ -26,6 +26,24 @@ public class Top100 {
 
     }
 
+    /**
+     * top11：11. 盛最多水的容器（双指针，清晰图解） https://leetcode.cn/problems/container-with-most-water/solutions/11491/container-with-most-water-shuang-zhi-zhen-fa-yi-do/
+     * <p>
+     * 题解： 双指针，求最大面积
+     *
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        int i = 0, j = height.length - 1, res = 0;
+        while (i < j) {
+            res = height[i] < height[j] ?
+                    Math.max(res, (j - i) * height[i++]) : // height[i++] 是因为： height[i] < height[j]， 最大面积由height[i]决定
+                    Math.max(res, (j - i) * height[j--]);  // height[i++] 是因为： height[i] > height[j]， 最大面积由height[j]决定
+        }
+        return res;
+    }
+
 
     @Test
     public void testrestoreIpAddresses() {
@@ -37,7 +55,7 @@ public class Top100 {
 
     /**
      * top93: 赋值IP地址  https://leetcode.cn/problems/restore-ip-addresses/solutions/15658/jian-dan-yi-yu-li-jie-de-hui-su-fa-java-by-caipeng/
-     *
+     * <p>
      * 题解： 回溯算法
      *
      * @param s
