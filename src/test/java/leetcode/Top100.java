@@ -3,7 +3,6 @@ package leetcode;
 import com.kaifei.algo.Utils.PrintUtils;
 import org.junit.Test;
 
-import java.awt.*;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -13,46 +12,216 @@ public class Top100 {
 
 
     @Test
-    public void testmerge(){
+    public void test() {
+        System.out.println(1 % 2); // 1
+        System.out.println(0 % 2); // 0
+        System.out.println(3 % 2); // 1
+        System.out.println(2 % 2); // 0
+
+        //进位
+        System.out.println(1 / 2); // 0
+        System.out.println(0 / 2); // 0
+        System.out.println(3 / 2); // 1
+        System.out.println(2 / 2); // 1
+
+    }
+
+
+    /**
+     *
+     top35: 搜索插入位置 https://leetcode.cn/problems/search-insert-position/description/
+     题解： 二分法查找，实际就是相当于一层快排
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+         int left =0, right = nums.length -1;
+
+         while (left<=right) {
+             int mid = (left + right) /2;
+             if (nums[mid] == target) {
+                 return mid;
+             }
+             else if ( nums[mid]< target){
+                 left = mid+1;
+             }else {
+                 right = mid-1;
+             }
+         }
+        return left;
+    }
+
+    private int getIndex(int[] nums, int target) {
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    @Test
+    public void testaddBinary1() {
+        String a = "1111", b = "1111";
+        String s = addBinary(a, b);
+        System.out.println(s);
+    }
+
+
+    /**
+     *
+     top67: 二进制求和  https://leetcode.cn/problems/add-binary/
+     题解：
+     1、 找出最大串，和最小串
+     2、 同时遍历，当lmax >= lmin && lmin >= 0 计算重叠部分，其余直接加即可， 用sb来存放，val%2表示当前各位，val/2表示进位
+     3、 遍历结束看进位是否为1，为1则追加
+     4、 sb.reverse来返回结果
+     *
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+        int la = a.length();
+        int lb = b.length();
+        String max, min;
+        if (la >= lb) {
+            max = a;
+            min = b;
+        } else {
+            max = b;
+            min = a;
+        }
+        int lmax = max.length() - 1;
+        int lmin = min.length() - 1;
+
+        StringBuilder sb = new StringBuilder();
+        int carry = 0;
+        while (lmax >= 0 || lmin >= 0) {
+            int cmax = max.charAt(lmax) - '0';
+            int val;
+            // 计算重叠部分
+            if (lmax >= lmin && lmin >= 0) {
+                int cmin = min.charAt(lmin) - '0';
+                val = cmax + cmin + carry;
+                lmin--;
+            }
+            else // 计算超的部分, 直接追加进位即可
+            {
+                val = cmax + carry;
+            }
+            // 求当前位
+            carry = val / 2;
+            //求进位
+            sb.append(val % 2);
+            lmax--;
+        }
+        if (carry == 1) sb.append(1);
+        return sb.reverse().toString();
+    }
+
+
+    /**
+     * top101: https://leetcode.cn/problems/symmetric-tree/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+     * <p>
+     * 它们的两个根结点具有相同的值
+     * 每个树的右子树都与另一个树的左子树镜像对称
+     */
+    public boolean isSymmetric(TreeNode root) {
+        return check(root, root);
+    }
+
+    public boolean check(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+
+        return p.val == q.val && check(p.left, q.right) && check(p.right, q.left);
+    }
+
+
+    /**
+     * top94: 二叉树中序遍历 https://leetcode.cn/problems/binary-tree-inorder-traversal/submissions/526604108/
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        bst(res, root);
+        return res;
+    }
+
+    private void bst(List<Integer> res, TreeNode root) {
+        if (root == null) return;
+
+        bst(res, root.left);
+        res.add(root.val);
+        bst(res, root.right);
+    }
+
+    class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    @Test
+    public void testmerge() {
         int[] nums1 = {1, 2, 3, 0, 0, 0};
         int m = 3;
-        int[] nums2 = {2,5,6};
-        int n=3;
+        int[] nums2 = {2, 5, 6};
+        int n = 3;
 
         merge(nums1, m, nums2, n);
     }
 
 
     /**
-     top88： 合并两个有序数组  https://leetcode.cn/problems/merge-sorted-array/
-
-     题解：三指针解决， 用len来存放 len1，len2 大的元素，一次进行比较，比较完之后将len2没有比较的元素全部都copy过去
-
-     思路
-     标签：从后向前数组遍历
-     因为 nums1 的空间都集中在后面，所以从后向前处理排序的数据会更好，节省空间，一边遍历一边将值填充进去
-     设置指针 len1 和 len2 分别指向 nums1 和 nums2 的有数字尾部，从尾部值开始比较遍历，同时设置指针 len 指向 nums1 的最末尾，每次遍历比较值大小之后，则进行填充
-     当 len1<0 时遍历结束，此时 nums2 中海油数据未拷贝完全，将其直接拷贝到 nums1 的前面，最后得到结果数组
-     时间复杂度：O(m+n)O(m+n)O(m+n)
+     * top88： 合并两个有序数组  https://leetcode.cn/problems/merge-sorted-array/
+     * <p>
+     * 题解：三指针解决， 用len来存放 len1，len2 大的元素，一次进行比较，比较完之后将len2没有比较的元素全部都copy过去
+     * <p>
+     * 思路
+     * 标签：从后向前数组遍历
+     * 因为 nums1 的空间都集中在后面，所以从后向前处理排序的数据会更好，节省空间，一边遍历一边将值填充进去
+     * 设置指针 len1 和 len2 分别指向 nums1 和 nums2 的有数字尾部，从尾部值开始比较遍历，同时设置指针 len 指向 nums1 的最末尾，每次遍历比较值大小之后，则进行填充
+     * 当 len1<0 时遍历结束，此时 nums2 中海油数据未拷贝完全，将其直接拷贝到 nums1 的前面，最后得到结果数组
+     * 时间复杂度：O(m+n)O(m+n)O(m+n)
      */
     public void merge(int[] nums1, int m, int[] nums2, int n) {
-        int len1 = m-1;
-        int len2 = n-1;
-        int len = m+n-1;
+        int len1 = m - 1;
+        int len2 = n - 1;
+        int len = m + n - 1;
 
-        while (len1>=0 && len2>=0){
+        while (len1 >= 0 && len2 >= 0) {
             // nums1的前m个数与nums2的n个元素进行比较
-            if (nums1[len1] > nums2[len2]){
+            if (nums1[len1] > nums2[len2]) {
                 nums1[len] = nums1[len1];
                 len1--;
-            }else{
+            } else {
                 nums1[len] = nums2[len2];
                 len2--;
             }
             len--;
         }
         // 表示将nums2数组从下标0位置开始，拷贝到nums1数组中，从下标0位置开始，长度为len2+1
-        System.arraycopy(nums2,0, nums1, 0, len2+1);
+        System.arraycopy(nums2, 0, nums1, 0, len2 + 1);
     }
 
     public static void quickSort(int[] arr, int low, int high) {
@@ -103,11 +272,11 @@ public class Top100 {
         int pivot = arr[n - 1];
         int left = low;
         int right = high;
-        while (left < right){
-            while( arr[left] <= pivot && left < right){
+        while (left < right) {
+            while (arr[left] <= pivot && left < right) {
                 left++;
             }
-            while( arr[right] >= pivot && left < right){
+            while (arr[right] >= pivot && left < right) {
                 right--;
             }
             int tmp = arr[right];
@@ -116,8 +285,8 @@ public class Top100 {
         }
         arr[low] = arr[left];
         arr[left] = pivot;
-        quickSort(arr, low, left-1);
-        quickSort(arr, left+1, high);
+        quickSort(arr, low, left - 1);
+        quickSort(arr, left + 1, high);
         // sort
     }
 
