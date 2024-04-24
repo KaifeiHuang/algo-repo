@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 public class Top100 {
 
 
+
     @Test
     public void test() {
         System.out.println(1 % 2); // 1
@@ -24,6 +25,45 @@ public class Top100 {
         System.out.println(3 / 2); // 1
         System.out.println(2 / 2); // 1
 
+    }
+
+    @Test
+    public void teststrStr() {
+        String str = "sadbutsad";
+        String needle = "sad";
+        strStr(str, needle);
+    }
+
+    public int strStr1(String haystack, String needle) {
+
+        return haystack.indexOf(needle);
+
+    }
+
+    /**
+     28. 找出字符串中第一个匹配项的下标   https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/description/
+     题解： // 字符挨个匹配，匹配失败重新匹配
+     *
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    public int strStr(String haystack, String needle) {
+        // 字符挨个匹配，匹配失败重新匹配
+        int n = haystack.length();
+        int m = needle.length();
+        char[] hc = haystack.toCharArray();
+        char[] dc = needle.toCharArray();
+        for (int i = 0; i <= n - m; i++) {
+            int a = i, b=0;
+            while (b<m && hc[a] == dc[b]){
+                a++;
+                b++;
+            }
+            // 完全匹配返回i
+            if (b==m) return i;
+        }
+        return -1;
     }
 
 
