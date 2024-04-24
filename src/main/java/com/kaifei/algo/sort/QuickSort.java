@@ -1,6 +1,12 @@
 package com.kaifei.algo.sort;
 
 
+/**
+ * 思想： 采用了二分的思想
+ *
+ * 时间复杂度:  O(NlogN)
+ * 空间复杂度： O(1)
+ */
 public class QuickSort {
 
 
