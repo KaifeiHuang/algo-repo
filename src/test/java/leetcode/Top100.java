@@ -14,6 +14,8 @@ public class Top100 {
 
     @Test
     public void test() {
+        int a = 10;
+        System.out.println(-a);
         System.out.println(1 % 2); // 1
         System.out.println(0 % 2); // 0
         System.out.println(3 % 2); // 1
@@ -28,11 +30,53 @@ public class Top100 {
     }
 
     @Test
-    public void test1() {
-        int[] nums = new int[]{1, 2, 3};
-        System.out.println(subarraySum(nums, 3));
+    public void test1asteroidCollision() {
+        int[] nums = new int[]{1, -6, -3, -5, -80, -3, 3};
+        System.out.println(asteroidCollision(nums));
 
     }
+
+    /**
+     * top739： 行星相撞 https://leetcode.cn/problems/asteroid-collision/
+     *
+     * 时间复杂度： 0（N)
+     * int[] asteroids = [1, -6, -3, -5, -80, -3, 3]
+     *
+     * @param asteroids
+     * @return
+     */
+    public int[] asteroidCollision(int[] asteroids) {
+        // 定义栈
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int ast: asteroids) {
+            if (ast >0) { // 为正表示，同向，直接往栈里push
+                stack.push(ast);
+            }
+            else // 不同方向，行星相撞
+            {
+                // 相撞
+                // 栈顶元素的行星比当前行星小，将栈顶弹出， 比如-8 与栈顶5
+                while (!stack.isEmpty() && stack.peek()>0 && stack.peek()<-ast){
+                    stack.pop();
+                }
+                // 对于两个行星大小一样，方向相反，将栈顶弹出
+                if (!stack.isEmpty() && stack.peek() == -ast) {
+                    stack.pop();
+                }
+                // 栈顶元素为负的情况，且当前元素, 例如当前元素-10， 栈顶元素-5
+                else if(stack.isEmpty() || stack.peek()<0){
+                    stack.push(ast);
+                }
+            }
+        }
+        // 遍历结果
+        int[] res = new int[stack.size()];
+        for (int i = res.length-1; i >= 0; i--) {
+            res[i] = stack.pop();
+        }
+        return res;
+    }
+
 
     @Test
     public void test1dailyTemperatures() {
@@ -40,8 +84,6 @@ public class Top100 {
         System.out.println(dailyTemperatures(nums));
 
     }
-
-
 
     /**
      * 从右到左进行遍历温度数组，用栈来存储每个温度在数组的索引，
