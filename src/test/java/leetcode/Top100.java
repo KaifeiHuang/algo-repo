@@ -1,6 +1,7 @@
 package leetcode;
 
 import com.kaifei.algo.Utils.PrintUtils;
+import com.kaifei.algo.sort.ListNode;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -24,6 +25,481 @@ public class Top100 {
         System.out.println(3 / 2); // 1
         System.out.println(2 / 2); // 1
 
+    }
+
+    @Test
+    public void test1() {
+        int[] nums = new int[]{1, 2, 3};
+        System.out.println(subarraySum(nums, 3));
+
+    }
+
+    @Test
+    public void test1dailyTemperatures() {
+        int[] nums = new int[]{73, 74, 75, 71, 69, 72, 76, 73};
+        System.out.println(dailyTemperatures(nums));
+
+    }
+
+
+
+    /**
+     * 从右到左进行遍历温度数组，用栈来存储每个温度在数组的索引，
+     * 每次遍历中，如果arr[i] > t[栈顶元素]， 则将栈顶元素pop， 因为arr[栈里所用]比arr[i]小的，根据题意没有任何意义
+     * 每次遍历完，如果stack为空，代表没有比arr[i]大的数， 不为空，栈顶与i的距离则为答案
+     * 最后，每次把比i位置 push到栈里
+     *
+     * @param temperatures
+     * @return
+     */
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] ans = new int[n];
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = n - 1; i >= 0; i--) {
+            // 定义ar[i]左侧所有比arr[i]大的数
+            // 栈顶元素： 下一个比arr[i]大的数
+            while (!stack.isEmpty() && temperatures[i] >= temperatures[stack.peek()]) {
+                stack.pop();
+            }
+            if (stack.isEmpty()) {
+                ans[i] = 0;
+            } else {
+                ans[i] = stack.peek() - i;
+            }
+            stack.push(i);
+        }
+        return ans;
+    }
+
+    public int[] dailyTemperatures1(int[] temperatures) {
+        int[] t = temperatures;
+        int n = temperatures.length;
+        int[] ans = new int[n];
+
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = n - 1; i > 0; i--) {
+            while (!stack.isEmpty() && t[i] > t[stack.peek()]) stack.pop();
+
+            if (stack.isEmpty()) ans[i] = 0;
+            else ans[i] = stack.peek() - i;
+            stack.push(i);
+        }
+
+        return ans;
+
+    }
+
+
+    /**
+     * https://leetcode.cn/problems/reverse-linked-list-ii/solutions/37247/bu-bu-chai-jie-ru-he-di-gui-di-fan-zhuan-lian-biao/
+     *
+     * @param head
+     * @param left
+     * @param right
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        // left =1 前N个节点反转
+        if (left == 1) return reverseN(head, right);
+        head.next = reverseBetween(head.next, left - 1, right - 1);
+        return head;
+    }
+
+    ListNode successor = null;
+
+    public ListNode reverseN(ListNode head, int n) {
+        if (n == 1) {
+            // 记录第n+1个节点
+            successor = head.next;
+            return head;
+        }
+
+        ListNode last = reverseN(head.next, n - 1);
+        head.next.next = head;
+        // 让反转之后的 head 节点和后面的节点连起来
+        head.next = successor;
+        return last;
+
+    }
+
+    @Test
+    public void test1subarraySum() {
+        int[] nums = new int[]{1, 2, 3};
+        System.out.println(subarraySum(nums, 3));
+
+    }
+
+
+    /**
+     * top206反转链表：https://leetcode.cn/problems/reverse-linked-list/
+     * 题解： 递归
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        ListNode rerverse_node = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return rerverse_node;
+    }
+
+
+    /**
+     * 思路：
+     * 1、定义两个指针i， j
+     * 2、将j先移动到K的位置
+     * 3、i，j用相同速度移动，j要出界时，i的位置就是倒数K个节点，因为i与j相隔k个位置
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode findKthNode(ListNode head, int k) {
+        ListNode i = head, j = head;
+        for (int c = 0; c < k; c++) {
+            j = j.next;
+        }
+        while (j != null) {
+            i = j.next;
+            j = j.next;
+        }
+        return i;
+    }
+
+    /**
+     * 1、两个指针，同向而行
+     * 2、i每次移动一个，j每次移动2个，j是i的2倍，当j到n的最后位置，i就是中间位置
+     *
+     * @param head
+     * @return
+     */
+    public ListNode linkedlistMiddleNodeMidNode(ListNode head) {
+        ListNode i = head, j = head;
+        while (j != null && j.next != null) {
+            i = j.next;
+            j = j.next.next;
+        }
+        return i;
+    }
+
+
+    /**
+     * 题解1： 双指针
+     * <p>
+     * 题解2： 最小堆解法， 将node数组放入最小heap中，然后heap poll，用一个node接收即可，时间复杂度O(LogK)
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        PriorityQueue<ListNode> heap = new PriorityQueue<>((a, b) -> (a.val - b.val));
+        // 初始化heap
+        for (ListNode node : lists) {
+            if (node != null) {
+                heap.offer(node);
+            }
+        }
+        // poll， 用新node接收
+        ListNode res = new ListNode(0), cur = res;
+        while (!heap.isEmpty()) {
+            ListNode top = heap.poll();
+            cur.next = top;
+            cur = cur.next;
+            if (top.next != null) {
+                // 再把top的next放入堆里面， 让堆来处理
+                heap.offer(top.next);
+            }
+        }
+        return res.next;
+
+    }
+
+
+    public int findKthLargest1(int[] nums, int k) {
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        for (int x : nums) {
+            if (heap.size() < k || x > heap.peek()) {
+                heap.offer(x);
+            }
+            if (heap.size() > k) {
+                heap.poll();
+            }
+        }
+        return heap.peek();
+
+    }
+
+
+    /**
+     * 题解： 先排序，然后nums.length-k就是第K个最大的元素
+     */
+    public int findKthLargest(int[] nums, int k) {
+        Arrays.sort(nums);
+        return nums[nums.length - k];
+
+    }
+
+    public int subarraySum(int[] nums, int k) {
+        // 用map来存储， key表示子数组的和，value表示出现的次数
+        Map<Integer, Integer> map = new HashMap<>();
+        // 初始化
+        map.put(0, 1);
+        int ans = 0;
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+
+            sum = sum + nums[i];
+            if (map.containsKey(sum - k)) {
+                ans += map.get(sum - k);
+                //   map.put(nums[i], ans);
+
+            }
+
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return ans;
+
+    }
+
+    @Test
+    public void test1fourSum() {
+        int[] nums = new int[]{1, 0, -1, 0, -2, 2};
+
+        int target = 0;
+        List<List<Integer>> lists = fourSum1(nums, target);
+        System.out.println(lists);
+    }
+
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        int n = nums.length;
+        // biz code
+        for (int i = 0; i < n; i++) {
+            // 正整数，if nums[i] > target，代表后面无条件满足
+            if (nums[i] > 0 && nums[i] > target) return res;
+            // 去重
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+            for (int j = i + 1; j < n; j++) {
+                // 去重
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+
+                int left = j + 1;
+                int right = n - 1;
+                while (right > left) {
+                    long sum = (long) nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum > target) {
+                        right--;
+                    } else if (sum < target) {
+                        left++;
+                    } else // sum==target 添加
+                    {
+                        res.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                        while (right > left && nums[right] == nums[right - 1]) right--;
+                        while (right > left && nums[left] == nums[left + 1]) left++;
+                        left++;
+                        right--;
+
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+
+    public List<List<Integer>> fourSum1(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        int n = nums.length;
+        // biz code
+        for (int i = 0; i < n; i++) {
+            // 去重
+            if (nums[i] > 0 && nums[i] > target) return res;
+
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+            for (int j = i + 1; j < n; j++) {
+
+                // 去重
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+
+                int left = j + 1;
+                int right = n - 1;
+                while (right > left) {
+                    // 注意四数相加，有可能溢出，所以用long
+                    long sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum < target) {
+                        left++;
+                    } else if (sum > target) {
+                        right--;
+                    } else {
+                        res.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+
+                        while (right > left && nums[right] == nums[right - 1]) right--;
+                        while (right > left && nums[left] == nums[left + 1]) left++;
+
+                        left++;
+                        right--;
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+
+
+    @Test
+    public void testthreeSum() {
+//        int[] nums = new int[]{1, 5, 9, 100};
+//        int i = oneClosest(nums, 80);
+//        System.out.println("closest num=" + i);
+
+        int[] nums = new int[]{-1, 0, 1, 2, -1, -4};
+        List<List<Integer>> res = threeSum(nums);
+        System.out.println(res);
+
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        // 排序 nums
+        Arrays.sort(nums);
+
+        // 临界条件判断
+        if (nums[0] > 0) return new ArrayList<>();
+
+        // 正常逻辑
+        int n = nums.length;
+        List<List<Integer>> res = new ArrayList<>();
+//        res.add(Arrays.asList(0, 0, 0));
+        for (int i = 0; i < n; i++) {
+            // 去重
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int j = i + 1, k = n - 1;
+            while (j < k) {
+                int tmp = nums[i] + nums[j] + nums[k];
+                if (tmp == 0) {
+                    res.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    // 去重
+                    while (j < k && nums[j] == nums[j + 1]) j++;
+                    // 去重
+                    while (j < k && nums[k] == nums[k - 1]) k--;
+                    j++;
+                    k--;
+
+                } else if (tmp > 0) {
+                    k--;
+                } else {
+                    j++;
+                }
+            }
+        }
+        return res;
+    }
+
+    public int oneClosest(int[] nums, int target) {
+        int res = 0, minAbs = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            int val = nums[i];
+            if ((Math.abs(val - target) < minAbs)) {
+
+                minAbs = Math.abs(val - target);
+                res = val;
+            }
+
+        }
+        return res;
+    }
+
+    /**
+     * top16：最接近的三数之和  https://leetcode.cn/problems/3sum-closest/submissions/527804470/
+     * <p>
+     * 解法1： 暴力求解。 三层循环，但是要主要每层循环不能起始值一样
+     * 时间复杂度：O(n3)
+     * 空间复杂度：O(1)
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        int n = nums.length;
+        int minAbs = Integer.MAX_VALUE;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    int tmp = nums[i] + nums[j] + nums[k];
+                    if (tmp == target) {
+                        return target;
+                    }
+                    if (Math.abs(tmp - target) <= minAbs) {
+                        minAbs = Math.abs(tmp - target);
+                        res = tmp;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * top16：最接近的三数之和  https://leetcode.cn/problems/3sum-closest/submissions/527804470/
+     * <p>
+     * 解法2： 排序+双指针
+     * 时间复杂度：O(n)
+     * 空间复杂度：O(1)
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest2(int[] nums, int target) {
+        int n = nums.length;
+        Arrays.sort(nums);
+
+        int minAbs = Integer.MAX_VALUE;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            int j = i + 1, k = n - 1;
+            while (j < k) {
+                int tmp = nums[i] + nums[j] + nums[k];
+                if (tmp == target) return tmp;
+                if (Math.abs(tmp - target) <= minAbs) {
+                    minAbs = Math.abs(tmp - target);
+                    res = tmp;
+                }
+                if (tmp > target) {
+                    k--;
+                } else {
+                    j++;
+                }
+            }
+        }
+        return res;
+    }
+
+    public String intToRoman(int num) {
+        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < values.length; i++) {
+            int value = values[i];
+            String symbol = symbols[i];
+            while (num >= value) {
+                num -= value;
+                sb.append(symbol);
+            }
+            if (num == 0) break;
+
+        }
+        return sb.toString();
     }
 
     /**
@@ -247,6 +723,44 @@ public class Top100 {
         if (p == null || q == null) return false;
 
         return p.val == q.val && check(p.left, q.right) && check(p.right, q.left);
+    }
+
+    /**
+     * top637. 二叉树的层平均值 https://leetcode.cn/problems/average-of-levels-in-binary-tree/description/
+     *
+     * @param root
+     * @return
+     */
+    public List<Double> averageOfLevels(TreeNode root) {
+        // 记录每层节点数
+        List<Integer> counts = new ArrayList<>();
+        // 记录每层节点数之和
+        List<Double> sums = new ArrayList<>();
+        dfs(root, 0, counts, sums);
+        // 求平均， 遍历和，然后除以层数即为平均值
+        List<Double> avgs = new ArrayList<>();
+        for (int i = 0; i < sums.size(); i++) {
+            avgs.add(sums.get(i) / counts.get(i));
+        }
+        return avgs;
+    }
+
+    private void dfs(TreeNode root, int level, List<Integer> counts, List<Double> sums) {
+        if (root == null) {
+            return;
+        }
+
+        if (level < sums.size()) {
+            sums.set(level, sums.get(level) + root.val);
+            counts.set(level, counts.get(level) + 1);
+        } else {// 只有一个节点
+            sums.add(1.0 * root.val);
+            counts.add(1);
+        }
+
+        dfs(root.left, level + 1, counts, sums);
+        dfs(root.right, level + 1, counts, sums);
+
     }
 
 
